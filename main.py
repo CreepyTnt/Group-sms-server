@@ -69,100 +69,100 @@ while True:
         print(message) # message.content or message.number
         msg_num = message.number; msg_content = message.content
 
-        if str.lower(msg_content)[0] == '!':
-            if str.lower(msg_content) == '!create':
+        if str.lower(message.content)[0] == '!':
+            if str.lower(message.content) == '!create':
 
-                path = auth.save_dir + ask(msg_num, 'Please enter a name for your group.') + '.txt'
+                path = auth.save_dir + ask(message.number, 'Please enter a name for your group.') + '.json'
 
                 try:#check if file already exsists
                     f = open(path, 'r')
                     f.close()
-                    client.send_sms(msg_num, 'That chat already exsists')
+                    client.send_sms(message.number, 'That chat already exsists')
                 except:
                     f = open (path, 'w')
-                    group = msg_num
+                    group = message.number
                     f.write(json.dumps([group]))
                     f.close()
-                    client.send_sms(msg_num, 'Group created')
+                    client.send_sms(message.number, 'Group created')
 
 
-            elif str.lower(msg_content) == 'help':
-                client.send_sms(msg_num, 'current commands are !help, !create.') #more commands will include message, delete group, remove from group, leave group, setup(to change you display name in chats), and lookup by number.
+            elif str.lower(message.content) == 'help':
+                client.send_sms(message.number, 'current commands are !help, !create.') #more commands will include message, delete group, remove from group, leave group, setup(to change you display name in chats), and lookup by number.
             
-            elif str.lower(msg_content) == '!add':
-                path = auth.save_dir + ask(msg_num, 'Please enter a name of your group.') + '.txt'
+            elif str.lower(message.content) == '!add':
+                path = auth.save_dir + ask(message.number, 'Please enter a name of your group.') + '.json'
                 if os.path.exists(path):
                     f = open(path, 'r')
                     group = json.loads(f.read())
-                    if msg_num in group or '+1' + msg_num in group:
+                    if message.number in group or '+1' + message.number in group:
                         f.close()
 
-                        group.append(ask(msg_num, 'please enter the number(starting with +1) to add to group'))
+                        group.append(ask(message.number, 'please enter the number(starting with +1) to add to group'))
 
                         f = open (path, 'w')
                         print ('file opened')
                         f.writelines(json.dumps(group))
                         
-                        client.send_sms(msg_num, 'added to group')
+                        client.send_sms(message.number, 'added to group')
                         
                     else:
-                        client.send_sms(msg_num, 'You can only add people to groups you are in.')
+                        client.send_sms(message.number, 'You can only add people to groups you are in.')
                     f.close()
 
                 else:
-                    client.send_sms(msg_num, "Chat doesn't exsist")
+                    client.send_sms(message.number, "Chat doesn't exsist")
                 
                     
 
-            elif str.lower(msg_content) == '!message':
-                path = auth.save_dir + ask(msg_num, 'Please enter the name of your group.') + '.txt'
+            elif str.lower(message.content) == '!message':
+                path = auth.save_dir + ask(message.number, 'Please enter the name of your group.') + '.json'
             
                 if os.path.exists(path):
                     f = open(path, 'r')
                     chat = json.loads(f.read())
-                    if msg_num in chat:
+                    if message.number in chat:
                         
-                        text = ask(msg_num, 'type message')
+                        text = ask(message.number, 'type message')
                         for i in chat:
                             print ('sent ' + text + ' to ' + i)
-                            client.send_sms(i, msg_num + ' said: ' + text)
+                            client.send_sms(i, message.number + ' said: ' + text)
                     else:
-                        client.send_sms(msg_num, 'You are not in this group.')
+                        client.send_sms(message.number, 'You are not in this group.')
 
                 else:
-                    client.send_sms(msg_num, 'Error. Check your spelling in the group chat name.')
+                    client.send_sms(message.number, 'Error. Check your spelling in the group chat name.')
 
 
 
-            elif str.lower(msg_content) == '!remove':
-                path = auth.save_dir + ask(msg_num, 'Please enter the name of the group you would like to leave.') + '.txt'
+            elif str.lower(message.content) == '!remove':
+                path = auth.save_dir + ask(message.number, 'Please enter the name of the group you would like to leave.') + '.json'
 
                 if os.path.exists(path):
                     f = open(path, 'r')
                     chat = json.loads(f.read())
-                    if msg_num in chat:
+                    if message.number in chat:
                         f.close()
         
                         f = open(path, 'w')
-                        f.write(json.dumps(chat.remove(msg_num)))
+                        f.write(json.dumps(chat.remove(message.number)))
                         f.close()
-                        client.send_sms(msg_num, 'Removed from chat.')
+                        client.send_sms(message.number, 'Removed from chat.')
                     else:
-                        client.send_sms(msg_num, 'you are not in this chat.')
+                        client.send_sms(message.number, 'you are not in this chat.')
                 else:
-                    client.send_sms(msg_num, 'this group doesn not exist.')
+                    client.send_sms(message.number, 'this group doesn not exist.')
 
 
 
 
 
             else:
-                client.send_sms(msg_num, 'invalid command, please use !help for list of commands')  
+                client.send_sms(message.number, 'invalid command, please use !help for list of commands')  
                 
 
 
         else:
-            client.send_sms(msg_num, 'invalid command, please use !help for list of commands')  
+            client.send_sms(message.number, 'invalid command, please use !help for list of commands')
         
         
         
